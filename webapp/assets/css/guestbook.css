@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+@import "mysite.css";
+body{color:#FFFF00}
+
+*{ background-color:#000}
+
+#guestbook			{ margin:20px auto;	width:540px; }
+
+#guestbook form, 
+#guestbook table	{ width:100% }
+
+#guestbook table,	
+#guestbook table td { border:1px solid #FFFF00 ; }
+#guestbook table td { padding:5px}
+#guestbook input 	{ background-color:#F3E2A9 }
+#guestbook textarea { background-color:#F3E2A9;resize: none; width:500px }
+#guestbook .no td a{
+	display:block;
+	width:20px;
+	height:20px; 
+	background:url("/assets/images/recycle2.png") no-repeat 0 0;
+	font-size:0;
+}
+
+#guestbook ul		{ width:100%; margin-top:20px }
+#guestbook ul li	{ width:100%; margin-top:10px }
+
+
+
+#guestbook table.delete-form {
+	width:440px;
+	padding:10px;
+	border:1px solid #ffff00;
+	border-radius: 10px;
+	margin:50px auto;
+}
+#guestbook.delete-form a	{ display:block; margin:20px auto; width:110px }
+
+#guestbook.delete-message p	{ padding:10px; height:50px; text-align:center }
+
+#guestbook textarea#content	{ background-color:#F3E2A9;width: 100%; border:none; height: 100px; resize: none; outline: none; }

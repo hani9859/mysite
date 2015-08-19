@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="board">
+	<typeAlias alias="BoardVo" type="com.bit2015.mysite3.vo.BoardVo"/>
+	<typeAlias alias="ReplyVo" type="com.bit2015.mysite3.vo.ReplyVo"/>
+	<select id = "pagingGetList" resultClass="BoardVo" parameterClass="java.lang.Long" >
+	<![CDATA[		SELECT  no, name, user_no, hit, title, message, reg_date,  totcnt - rnum + 1 as index_no, rnum, totcnt
+				  	FROM (SELECT A.*,
+			        ROWNUM AS rnum,
+			        FLOOR ( (ROWNUM - 1) / 10 + 1) AS page,
+			        COUNT (*) OVER () AS totcnt
+			        FROM ( SELECT * from MYSITE_BOARD ORDER BY reg_date desc ) A )
+			        WHERE page = #page#
+	]]>
+	</select>
+	<select id = "getView" resultClass="BoardVo" parameterClass="java.lang.Long" >
+	<![CDATA[		select no, name, user_no, title, message, reg_date, hit
+					from mysite_board
+					where no=#no#
+	]]>
+	</select>
+	<insert id="insert" parameterClass="BoardVo">
+	<![CDATA[
+		insert into mysite_board
+		VALUES(mysite_board_seq.nextval, #name#, #user_no#, #hit#, #title#, #message#, sysdate)
+	]]>
+	</insert>
+	<update id="hit" parameterClass="java.lang.Long">
+	<![CDATA[
+		update MYSITE_BOARD set hit=hit+1 where no=#no#
+	]]>
+	</update>
+	<delete id="delete" parameterClass="java.util.Map">
+	<![CDATA[
+		delete from mysite_board
+		where no=#no# and user_no=#user_no#
+	]]>
+	</delete>
+	<update id="modify" parameterClass="java.util.Map">
+	<![CDATA[
+		update mysite_board SET
+		title= #title#, MESSAGE=#message#, hit=#hit#, REG_DATE=sysdate
+		where NO=#no# and user_no=#user_no#
+	]]>
+	</update>
+	<select id="search" resultClass="BoardVo" parameterClass="java.util.Map">
+	<![CDATA[
+			SELECT  no, name, user_no, hit, title, message, reg_date,  totcnt - rnum + 1 as index_no, rnum, totcnt
+				  	FROM (SELECT A.*,
+			        ROWNUM AS rnum,
+			        FLOOR ( (ROWNUM - 1) / 10 + 1) AS page,
+			        COUNT (*) OVER () AS totcnt
+			        FROM ( SELECT * from MYSITE_BOARD where title like '%'||#title#||'%' ORDER BY reg_date desc ) A )
+			        WHERE page = #page#
+	]]>
+	</select>
+	<select id="replyList" resultClass="ReplyVo" parameterClass="java.lang.Long">
+	<![CDATA[
+			select * from mysite_reply where board_no=#board_no# order by group_no desc, order_no asc
+	]]>
+	</select>
+	<insert id="addReply" parameterClass="java.util.Map">
+	<![CDATA[
+			insert into MYSITE_REPLY 
+			VALUES(mysite_reply_seq.nextval, #board_no#, #user_no#, #name#, #message#, sysdate, (select nvl(Max(group_no+1),0) from mysite_reply), #order_no#, #depth#)
+	]]>
+	</insert>
+	<insert id="reReply" parameterClass="java.util.Map">
+	<![CDATA[
+			insert into MYSITE_REPLY 
+			VALUES(mysite_reply_seq.nextval, #board_no#, #user_no#, #name#, #message#, sysdate, #group_no#, #order_no#, #depth#)
+	]]>
+	</insert>
+	<update id="update" parameterClass="java.util.Map">
+	<![CDATA[
+		update MYSITE_REPLY 
+		SET ORDER_NO=order_no+1 where GROUP_NO=#group_no# and order_no>=#order_no#+1
+	]]>
+	</update>
+	<delete id="replydelete" parameterClass="java.util.Map">
+	<![CDATA[
+		delete from MYSITE_REPLY 
+		where BOARD_NO=#board_no# and GROUP_NO=#group_no# and order_no>=#order_no#
+	]]>
+	</delete>
+	
+</sqlMap>

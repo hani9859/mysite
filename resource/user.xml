@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="user">
+	<typeAlias alias="UserVo" type="com.bit2015.mysite3.vo.UserVo"/>
+	<select id="getByEmailAndPassword" resultClass="UserVo" parameterClass="java.util.Map">
+		<![CDATA[
+		select no, email, name 
+		from mysite_user
+		where email=#email#
+		and password=#password#
+	]]>
+	</select>
+	<select id="getEmail" resultClass="UserVo" parameterClass="java.lang.String">
+		<![CDATA[
+		select no, name, password 
+		from mysite_user
+		where email=#email#
+	]]>
+	</select>
+	<select id="getPassword" resultClass="java.lang.String" parameterClass="java.lang.Long">
+		<![CDATA[
+		select password 
+		from mysite_user
+		where no=#no#
+	]]>
+	</select>
+	
+	<insert id="insert" parameterClass="UserVo">
+		<![CDATA[
+		insert into mysite_user
+		values(mysite_seq.nextval, #name#, #email#, #password#, #gender#, sysdate)
+		
+		]]>
+	</insert>
+	<update id="update"  parameterClass="java.util.Map">
+		<![CDATA[
+		update MYSITE_USER SET PASSWORD=#password# where no=#no#
+	]]>
+	</update>
+	
+
+</sqlMap> 
